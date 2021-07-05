@@ -1,0 +1,19 @@
+#!/bin/bash
+ENV_FILE=.env
+
+echo "Cardboard DDNS Configurator"
+
+read -p "Enter API Key: " API_KEY
+read -p "Enter Secret: " SECRET
+
+read -p "Create ${ENV_FILE} (y/n)? " CONT
+if [ "$CONT" = "y" ]; then
+  echo "Writing..."
+  rm -f ${ENV_FILE}
+  echo "API_KEY=${API_KEY}" >> ${ENV_FILE}
+  echo "SECRET=${SECRET}" >> ${ENV_FILE}
+  echo "Config complete."
+else
+  echo "Exiting...";
+fi
+
