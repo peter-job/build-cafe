@@ -10,3 +10,5 @@ If I wanted to add a db to this, I would be able to add it to compose
 OK 
 
 https://docs.docker.com/compose/profiles/
+
+* Probably need to be able to use docker compose without the sub-dirs here

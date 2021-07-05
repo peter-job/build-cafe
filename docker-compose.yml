@@ -2,6 +2,7 @@ version: "3.9"
    
 services:
   ddns:
+    image: tulip2/cardboard-ddns
     env_file: .env
     build: ./cardboard-ddns
     command: ./ddns-client.sh --hostname cardboard.cafe --api-key ${API_KEY} --url ddns.cardboard.cafe --secret ${SECRET}
@@ -14,6 +15,7 @@ services:
         - certbot-etc:/etc/letsencrypt
     command: certonly --email ptjob6@gmail.com --non-interactive --agree-tos --no-eff-email -d cardboard.cafe --standalone --preferred-challenges http -v
   cafe:
+    image: tulip2/cardboard-cafe
     build: ./cardboard-cafe
     volumes:
         - type: volume
