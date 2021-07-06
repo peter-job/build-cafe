@@ -1,17 +1,26 @@
 #!/bin/bash
+
 ENV_FILE=.env
 
-echo "Cardboard DDNS Configurator"
+echo "Build Cafe Configurator"
 
-read -p "Enter API Key: " API_KEY
-read -p "Enter Secret: " SECRET
+read -p "Enter DDNS API Key: " DDNS_API_KEY
+read -p "Enter DDNS Secret: " DDNS_SECRET
+read -p "Enter Cafe URL: " CAFE_URL
+read -p "Enter SSL Email: " SSL_EMAIL
+read -p "Enter AWS Access Key: " AWS_ACCESS_KEY_ID
+read -p "Enter AWS Secret Key: " AWS_SECRET_ACCESS_KEY
 
 read -p "Create ${ENV_FILE} (y/n)? " CONT
 if [ "$CONT" = "y" ]; then
   echo "Writing..."
   rm -f ${ENV_FILE}
-  echo "API_KEY=${API_KEY}" >> ${ENV_FILE}
-  echo "SECRET=${SECRET}" >> ${ENV_FILE}
+  echo "DDNS_API_KEY=${DDNS_API_KEY}" >> ${ENV_FILE}
+  echo "DDNS_SECRET=${DDNS_SECRET}" >> ${ENV_FILE}
+  echo "CAFE_URL=${CAFE_URL}" >> ${ENV_FILE}
+  echo "SSL_EMAIL=${SSL_EMAIL}" >> ${ENV_FILE}
+  echo "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" >> ${ENV_FILE}
+  echo "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" >> ${ENV_FILE}
   echo "Config complete."
 else
   echo "Exiting...";

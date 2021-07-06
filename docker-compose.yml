@@ -5,30 +5,47 @@ services:
     image: tulip2/cardboard-ddns
     env_file: .env
     build: ./cardboard-ddns
-    command: ./ddns-client.sh --hostname cardboard.cafe --api-key ${API_KEY} --url ddns.cardboard.cafe --secret ${SECRET}
+    command: ./ddns-client.sh --hostname ${CAFE_URL} --api-key ${DDNS_API_KEY} --url ddns.cardboard.cafe --secret ${DDNS_SECRET}
+  
   ssl:
-    image: certbot/certbot
+    image: certbot/dns-route53
     container_name: certbot
     ports:
-        - "80:80"
+        - "53:53"
     volumes:
         - certbot-etc:/etc/letsencrypt
-    command: certonly --email ptjob6@gmail.com --non-interactive --agree-tos --no-eff-email -d cardboard.cafe --standalone --preferred-challenges http -v
+    depends_on:
+      - ddns
+    environment: 
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+    restart: on-failure
+    command: certonly --email ${SSL_EMAIL} --non-interactive --agree-tos --no-eff-email -d ${CAFE_URL} --staging --dns-route53 -v
+
   cafe:
     image: tulip2/cardboard-cafe
     build: ./cardboard-cafe
     volumes:
-        - type: volume
-          source: certbot-etc
-          target: /etc/letsencrypt
-          volume:
-            nocopy: true
+        - certbot-etc:/etc/letsencrypt
     depends_on:
         - ssl
+        - ddns
     ports:
+        - "80:80"
         - "443:443"
     working_dir: /home/express
-    command: npm start
+    restart: always
+    environment: 
+      - SSL_CERT_PATH=/etc/letsencrypt/live/${CAFE_URL}/
+    entrypoint: ["/bin/sh","-c"]
+    command:
+      - |
+        until ([ -d $$SSL_CERT_PATH ])
+        do
+          echo "Waiting for SSL cert..."
+          sleep 5
+        done
+        npm start
 
 volumes: 
     certbot-etc:
