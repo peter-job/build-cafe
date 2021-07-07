@@ -2,9 +2,9 @@
 
 ENV_FILE=.env
 
-if [ ! -f ENV_FILE ]
+if [ -f $ENV_FILE ]
 then
-  export $(cat $ENV_FILE | xargs)
+  export $(grep -v '^#' .env | xargs)
 fi
 
 echo 
@@ -52,6 +52,7 @@ if [ "$CONT" = "" ]; then
   echo "AWS_ACCESS_KEY_ID=${NEW_AWS_ACCESS_KEY_ID}" >> ${ENV_FILE}
   echo "AWS_SECRET_ACCESS_KEY=${NEW_AWS_SECRET_ACCESS_KEY}" >> ${ENV_FILE}
   echo "SSL_ENABLED=${NEW_SSL_ENABLED}" >> ${ENV_FILE}
+  echo
   echo "Config complete."
 else
   echo
