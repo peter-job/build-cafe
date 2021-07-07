@@ -2,27 +2,59 @@
 
 ENV_FILE=.env
 
-echo "Build Cafe Configurator"
-
-read -p "Enter DDNS API Key: " DDNS_API_KEY
-read -p "Enter DDNS Secret: " DDNS_SECRET
-read -p "Enter Cafe URL: " CAFE_URL
-read -p "Enter SSL Email: " SSL_EMAIL
-read -p "Enter AWS Access Key: " AWS_ACCESS_KEY_ID
-read -p "Enter AWS Secret Key: " AWS_SECRET_ACCESS_KEY
-
-read -p "Create ${ENV_FILE} (y/n)? " CONT
-if [ "$CONT" = "y" ]; then
-  echo "Writing..."
-  rm -f ${ENV_FILE}
-  echo "DDNS_API_KEY=${DDNS_API_KEY}" >> ${ENV_FILE}
-  echo "DDNS_SECRET=${DDNS_SECRET}" >> ${ENV_FILE}
-  echo "CAFE_URL=${CAFE_URL}" >> ${ENV_FILE}
-  echo "SSL_EMAIL=${SSL_EMAIL}" >> ${ENV_FILE}
-  echo "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" >> ${ENV_FILE}
-  echo "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" >> ${ENV_FILE}
-  echo "Config complete."
-else
-  echo "Exiting...";
+if [ ! -f ENV_FILE ]
+then
+  export $(cat $ENV_FILE | xargs)
 fi
 
+echo 
+echo "~~~~~~~~~~~~~~~~~~~~~~~"
+echo "Build Cafe Configurator"
+echo "~~~~~~~~~~~~~~~~~~~~~~~"
+echo
+echo "Leave fields empty to keep current value."
+echo
+read -e -p "Enter DDNS API Key      (${DDNS_API_KEY:-empty}) : " NEW_DDNS_API_KEY; : "${NEW_DDNS_API_KEY:=$DDNS_API_KEY}"
+read -e -p "Enter DDNS Secret       (${DDNS_SECRET:-empty}) : " NEW_DDNS_SECRET; : "${NEW_DDNS_SECRET:=$DDNS_SECRET}"
+read -e -p "Enter DDNS API URL      (${DDNS_API_URL:-empty}) : " NEW_DDNS_API_URL; : "${NEW_DDNS_API_URL:=$DDNS_API_URL}"
+read -e -p "Enter Cafe URL          (${CAFE_URL:-empty}) : " NEW_CAFE_URL; : "${NEW_CAFE_URL:=$CAFE_URL}"
+read -e -p "Enter SSL Email         (${SSL_EMAIL:-empty}) : " NEW_SSL_EMAIL; : "${NEW_SSL_EMAIL:=$SSL_EMAIL}"
+read -e -p "Enter AWS Access Key    (${AWS_ACCESS_KEY_ID:-empty}) : " NEW_AWS_ACCESS_KEY_ID; : "${NEW_AWS_ACCESS_KEY_ID:=$AWS_ACCESS_KEY_ID}"
+read -e -p "Enter AWS Secret Key    (${AWS_SECRET_ACCESS_KEY:-empty}) : " NEW_AWS_SECRET_ACCESS_KEY; : "${NEW_AWS_SECRET_ACCESS_KEY:=$AWS_SECRET_ACCESS_KEY}"
+
+if [ ${SSL_ENABLED+x} ]; then
+  case "$SSL_ENABLED" in
+  "") SSL_ANSWER=n ;;
+  *) SSL_ANSWER=y ;;
+  esac
+fi
+
+read -e -p "Enable SSL (y/n)        (${SSL_ANSWER:-empty}) : " SSL_ANSWER
+if [ "$SSL_ANSWER" = "y" ]; then 
+  NEW_SSL_ENABLED="TRUE"
+elif [ "$SSL_ANSWER" = "n" ]; then 
+  NEW_SSL_ENABLED=""
+else 
+  NEW_SSL_ENABLED=$SSL_ENABLED
+fi
+
+echo
+read -n 1 -p "Write to ${ENV_FILE}? (Press Enter to Confirm): " CONT
+if [ "$CONT" = "" ]; then
+  echo
+  echo "Writing..."
+  rm -f ${ENV_FILE}
+  echo "DDNS_API_KEY=${NEW_DDNS_API_KEY}" >> ${ENV_FILE}
+  echo "DDNS_SECRET=${NEW_DDNS_SECRET}" >> ${ENV_FILE}
+  echo "DDNS_API_URL=${NEW_DDNS_API_URL}" >> ${ENV_FILE}
+  echo "CAFE_URL=${NEW_CAFE_URL}" >> ${ENV_FILE}
+  echo "SSL_EMAIL=${NEW_SSL_EMAIL}" >> ${ENV_FILE}
+  echo "AWS_ACCESS_KEY_ID=${NEW_AWS_ACCESS_KEY_ID}" >> ${ENV_FILE}
+  echo "AWS_SECRET_ACCESS_KEY=${NEW_AWS_SECRET_ACCESS_KEY}" >> ${ENV_FILE}
+  echo "SSL_ENABLED=${NEW_SSL_ENABLED}" >> ${ENV_FILE}
+  echo "Config complete."
+else
+  echo
+  echo "Exiting...";
+fi
+echo
