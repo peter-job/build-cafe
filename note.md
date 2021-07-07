@@ -7,3 +7,5 @@
     * [x] Commit
     * [x] Push
     * [x] Implement gitmodules
+
+* [x] Create readme
