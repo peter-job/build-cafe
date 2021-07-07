@@ -1,0 +1,14 @@
+version: "3.9"
+   
+services:
+  cafe:
+    volumes:
+        - ./cardboard-cafe/express:/home/express
+    command:
+      - |
+        until ([ -d $$SSL_CERT_PATH ])
+        do
+          echo "Waiting for SSL cert..."
+          sleep 5
+        done
+        npm run start:watch

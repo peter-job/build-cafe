@@ -3,9 +3,8 @@ version: "3.9"
 services:
   ddns:
     image: tulip2/cardboard-ddns
-    env_file: .env
     build: ./cardboard-ddns
-    command: ./ddns-client.sh --hostname ${CAFE_URL} --api-key ${DDNS_API_KEY} --url ddns.cardboard.cafe --secret ${DDNS_SECRET}
+    command: ddns-client --hostname ${CAFE_URL} --api-key ${DDNS_API_KEY} --url ddns.cardboard.cafe --secret ${DDNS_SECRET}
   
   ssl:
     image: certbot/dns-route53
@@ -37,6 +36,7 @@ services:
     restart: always
     environment: 
       - SSL_CERT_PATH=/etc/letsencrypt/live/${CAFE_URL}/
+      - SSL_ENABLED
     entrypoint: ["/bin/sh","-c"]
     command:
       - |
