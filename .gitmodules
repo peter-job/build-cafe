@@ -1,6 +1,8 @@
 [submodule "cardboard-cafe"]
 	path = cardboard-cafe
 	url = https://github.com/peter-job/cardboard-cafe.git
+	branch = master
 [submodule "cardboard-ddns"]
 	path = cardboard-ddns
 	url = https://github.com/peter-job/cardboard-ddns.git
+	branch = master
