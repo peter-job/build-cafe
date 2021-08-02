@@ -22,13 +22,15 @@ services:
     command: certonly --email ${SSL_EMAIL} --non-interactive --agree-tos --no-eff-email -d ${CAFE_URL} --staging --dns-route53 -v
 
   cafe:
-    image: tulip2/cardboard-cafe
+    image: tulip2/cardboard-cafe:${CAFE_TAG:-latest}
     build: ./cardboard-cafe
     volumes:
         - certbot-etc:/etc/letsencrypt
+        - gallery:/home/express/src/public/img
     depends_on:
         - ssl
         - ddns
+        - gallery
     ports:
         - "80:80"
         - "443:443"
@@ -46,6 +48,17 @@ services:
           sleep 5
         done
         npm start
+    
+  gallery:
+    image: alpine/git
+    volumes: 
+      - gallery:/opt/gallery
+    working_dir: /opt/gallery
+    entrypoint: ["/bin/sh","-c"]
+    command: 
+      - |
+        git -C favicons pull || git clone https://github.com/peter-job/favicon-archive.git favicons
 
 volumes: 
     certbot-etc:
+    gallery:

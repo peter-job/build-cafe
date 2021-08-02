@@ -4,6 +4,7 @@ services:
   cafe:
     volumes:
         - ./cardboard-cafe/express:/home/express
+        - cafe-node-modules:/home/express/node_modules
     command:
       - |
         until ([ -d $$SSL_CERT_PATH ])
@@ -12,3 +13,5 @@ services:
           sleep 5
         done
         npm run start:watch
+volumes:
+  cafe-node-modules:
