@@ -26,7 +26,7 @@ services:
     build: ./cardboard-cafe
     volumes:
         - certbot-etc:/etc/letsencrypt
-        - gallery:/home/express/src/public/img
+        - gallery:/home/express/src/gallery
     depends_on:
         - ssl
         - ddns
@@ -57,6 +57,7 @@ services:
     entrypoint: ["/bin/sh","-c"]
     command: 
       - |
+        rm -rf favicons
         git -C favicons pull || git clone https://github.com/peter-job/favicon-archive.git favicons
 
 volumes: 
